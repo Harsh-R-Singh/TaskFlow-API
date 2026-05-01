@@ -7,7 +7,14 @@ import v1Routes from './routes/v1/index.js';
 const app = express();
 
 // Middleware
-app.use(cors());
+app.use(cors({
+    origin: [process.env.CORS_ORIGIN, process.env.DEV_ORIGIN],
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    exposedHeaders: ['Content-Length', 'Date'],
+    optionsSuccessStatus: 200
+}));
 app.use(express.json());
 app.use(morgan('dev'));
 

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { LogOut, Plus, Trash2, Edit2, ShieldAlert } from 'lucide-react';
-
+const API_URL = import.meta.env.VITE_API_URL ? import.meta.env.VITE_API_URL.replace(/\/+$/, '') : '';
 const Dashboard = () => {
   const [tasks, setTasks] = useState([]);
   const [user, setUser] = useState(JSON.parse(localStorage.getItem('user') || '{}'));
@@ -17,10 +17,10 @@ const Dashboard = () => {
 
   const fetchTasks = async () => {
     try {
-      const url = showAdminTasks && user.role === 'admin' 
-        ? 'http://localhost:5000/api/v1/tasks/all'
-        : 'http://localhost:5000/api/v1/tasks';
-        
+      const url = showAdminTasks && user.role === 'admin'
+        ? API_URL + '/api/v1/tasks/all'
+        : API_URL + '/api/v1/tasks';
+
       const res = await axios.get(url, {
         headers: { Authorization: `Bearer ${token}` }
       });
@@ -46,12 +46,12 @@ const Dashboard = () => {
     e.preventDefault();
     try {
       if (editingId) {
-        await axios.put(`http://localhost:5000/api/v1/tasks/${editingId}`, 
+        await axios.put(API_URL + `/api/v1/tasks/${editingId}`, 
           { title, description, status },
           { headers: { Authorization: `Bearer ${token}` }}
         );
       } else {
-        await axios.post('http://localhost:5000/api/v1/tasks', 
+        await axios.post(API_URL + '/api/v1/tasks', 
           { title, description, status },
           { headers: { Authorization: `Bearer ${token}` }}
         );
@@ -77,7 +77,7 @@ const Dashboard = () => {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://localhost:5000/api/v1/tasks/${id}`, {
+      await axios.delete(API_URL + `/api/v1/tasks/${id}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       fetchTasks();
